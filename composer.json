@@ -1,0 +1,19 @@
+{
+  "name": "xiangxin/mlog",
+  "description": "logger",
+  "authors": [
+    {
+      "name": "liyk",
+      "email": "494210279@qq.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.2",
+    "monolog/monolog": "^2.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "Xiangxin\\Logger\\": "./src"
+    }
+  }
+}
