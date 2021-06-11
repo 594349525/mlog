@@ -1,6 +1,7 @@
 {
   "name": "xiangxin/mlog",
   "description": "logger",
+  "license": "MIT",
   "authors": [
     {
       "name": "liyk",
