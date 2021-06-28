@@ -1,0 +1,1 @@
+{"message":"==> LOG: 测试内容3 -- MLog.php:171##log","context":[{"name":"lyk"},{"code":"ddddd"}],"level":400,"level_name":"ERROR","channel":"default","datetime":"2021-06-11T09:37:02.382878+00:00","extra":{"process_id":37008,"uid":"c24d024"}}

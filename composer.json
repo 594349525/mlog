@@ -1,5 +1,5 @@
 {
-  "name": "xiangxin/mlog",
+  "name": "liyk/mlog",
   "description": "logger",
   "license": "MIT",
   "authors": [
@@ -9,12 +9,11 @@
     }
   ],
   "require": {
-    "php": ">=7.2",
     "monolog/monolog": "^2.2"
   },
   "autoload": {
     "psr-4": {
-      "Xiangxin\\Logger\\": "./src"
+      "Liyk\\Logger\\": "./src"
     }
   }
 }

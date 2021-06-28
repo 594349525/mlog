@@ -1,0 +1,2 @@
+{"message":"==> LOG: 测试内容2 -- MLog.php:165##log","context":[{"name":"lyk"},{"code":"ddddd"}],"level":200,"level_name":"INFO","channel":"default","datetime":"2021-06-11T09:33:34.206479+00:00","extra":{"process_id":36973,"uid":"8bcfe34"}}
+{"message":"==> LOG: 测试内容5 -- MLog.php:170##log","context":[{"name":"lyk"},{"code":"ddddd"}],"level":200,"level_name":"INFO","channel":"default","datetime":"2021-06-11T09:37:50.887478+00:00","extra":{"process_id":37024,"uid":"68d66ec"}}
