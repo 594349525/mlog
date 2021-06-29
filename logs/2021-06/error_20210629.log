@@ -1,0 +1,1 @@
+{"message":"2021-06-29 07:14:25 -- userId:45 -- 测试内容6 -- MLog.php:203##log","context":[{"name":"lyk"},{"code":"ddddd"}],"level":400,"level_name":"ERROR","channel":"note","datetime":"2021-06-29T07:14:25.262902+00:00","extra":{"file":null,"line":null,"class":"Xiangxin\\Logger\\MLog","function":"record","process_id":13685,"uid":"3cf7aea"}}

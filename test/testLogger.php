@@ -1,7 +1,7 @@
 <?php
 require_once "../vendor/autoload.php";
 
-use Liyk\Logger\MLog;
+use Xiangxin\Logger\MLog;
 
 MLog::init('/Users/liyk/56hello/Mlog/logs/', '', '', 45);
 

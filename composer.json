@@ -1,5 +1,5 @@
 {
-  "name": "liyk/mlog",
+  "name": "xiangxin/mlog",
   "description": "logger",
   "license": "MIT",
   "authors": [
@@ -13,7 +13,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Liyk\\Logger\\": "./src"
+      "Xiangxin\\Logger\\": "./src"
     }
   }
 }

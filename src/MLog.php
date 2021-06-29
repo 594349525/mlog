@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Liyk\Logger;
+namespace Xiangxin\Logger;
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
