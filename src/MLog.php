@@ -64,7 +64,9 @@ class MLog
         if (!empty($argv[3])) {
             self::$userId = $argv[3];
         }
+        LogFormat::_init_basic_fields();
     }
+
 
     /**
      * monolog日志
@@ -74,63 +76,75 @@ class MLog
      */
     public static function record($level, $message, $context, $channel = '')
     {
+        $real_level = $level;
+        if ($level == 'sql') {
+            $level = 'debug';
+        }
+        $basic_fields = LogFormat::_gen_basic_fields($level);
+        $trace = LogFormat::_format_content($basic_fields);
+
         if (empty($channel)) {
             $channel = self::$channel;
         }
-        $logger = self::createLogger($channel, $level);
+        $logger = self::createLogger($channel, $level, $real_level);
+        if (!$logger) {
+            return 0;
+        }
         $level = Logger::toMonologLevel($level);
         if (!is_int($level)) {
             $level = Logger::INFO;
         }
-        // $backtrace数组第$idx元素是当前行，第$idx+1元素表示上一层，另外function、class需再往上取一个层次
-        // PHP7 不会包含'call_user_func'与'call_user_func_array'，需减少一层
-        if (version_compare(PCRE_VERSION, '7.0.0', '>=')) {
-            $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-            $idx = 0;
-        } else {
-            $backtrace = debug_backtrace();
-            $idx = 1;
-        }
-        $trace = basename($backtrace[$idx]['file']) . ":" . $backtrace[$idx]['line'];
-        if (!empty($backtrace[$idx + 1]['function'])) {
-            $trace .= '##';
-            $trace .= $backtrace[$idx + 1]['function'];
+        $message_arr = [
+            'time' => date('Y-m-d H:i:s'),
+            'userId' => self::$userId,
+            'msg' => $message,
+            'trace' => $trace,
+        ];
+        $mes = '';
+        foreach ($message_arr as $key => $value) {
+            $mes .= $key . ':' . $value . '###';
         }
 
-        $message = sprintf(date('Y-m-d H:i:s') . ' -- userId:' . self::$userId . ' -- %s -- %s', $message, $trace);
+        $mes = rtrim($mes, '###');
 
-        return $logger->addRecord($level, $message, $context);
+        return $logger->addRecord($level, $mes, $context);
     }
+
 
     /**
      * 创建日志
      * @param $name
      * @return mixed
      */
-    private static function createLogger($name, $level, $file_format = 'json')
+    private static function createLogger($name, $level, $real_level, $file_format = 'json')
     {
         // 日志文件目录
         $logPath = self::$logPath;
         $now_m = date('Y-m');
         $nowDir = $logPath . '/' . $now_m;
         if (!is_dir($nowDir)) {
-            mkdir($nowDir, 0777, true);
+            if (!@file_exists($nowDir) && !@mkdir($nowDir, 0777, true)) {
+                return false;
+            }
         }
         //日志文件名
-        $cur_file_name = $level . '_' . date('Ymd');
+        $cur_file_name = $real_level . '_' . date('Ymd');
         $file_default = $nowDir . '/' . $cur_file_name . '.log';
-        if (!file_exists($file_default)) { //如果文件不存在,则创建该文件
-            touch($file_default);
+
+        //如果文件不存在,则创建该文件
+        if (!@file_exists($file_default) && (!@touch($file_default) || !@chmod($file_default, 0777))) {
+            return false;
         } else {
             // 清除缓存
             clearstatcache(true, $file_default);
         }
+
         //如果默认文件太大了，则按当前时刻生成新的文件
         if (file_exists($file_default) && filesize($file_default) >= self::$maxDefaultSize) {
-            $cur_file_name = $level . '_' . date('Ymd_H');
+            $cur_file_name = $real_level . '_' . date('Ymd_H');
             $cur_file = $nowDir . '/' . $cur_file_name . '.log';
-            if (!file_exists($cur_file)) { //如果文件不存在,则创建该文件
-                touch($cur_file);
+            if (!@file_exists($cur_file) && (!@touch($cur_file) || !@chmod($cur_file, 0777))) {
+                return false;
             }
         }
 
@@ -176,9 +190,6 @@ class MLog
             $pid_obj = new ProcessIdProcessor();
             $logger->pushProcessor($pid_obj);
 
-            //增加当前脚本的文件名和类名等信息
-            $logger->pushProcessor(new IntrospectionProcessor());
-
             //增加当前请求的URI、请求方法和访问IP等信息
             $logger->pushProcessor(new WebProcessor());
 
@@ -186,6 +197,7 @@ class MLog
         }
         return self::$loggers[$file_path];
     }
+
 
     /**
      * 记录日志信息
@@ -197,47 +209,9 @@ class MLog
      */
     public static function log($level, $message, array $context = [], $channel = '')
     {
-        if ($level == 'sql') {
-            $level = 'debug';
-        }
         self::record($level, $message, $context, $channel);
     }
 
-    /**
-     * 记录emergency信息
-     * @access public
-     * @param mixed $message 日志信息
-     * @param array $context 替换内容
-     * @return void
-     */
-    public static function emergency($message, array $context = [], $channel = '')
-    {
-        self::log(__FUNCTION__, $message, $context, $channel);
-    }
-
-    /**
-     * 记录警报信息
-     * @access public
-     * @param mixed $message 日志信息
-     * @param array $context 替换内容
-     * @return void
-     */
-    public static function alert($message, array $context = [], $channel = '')
-    {
-        self::log(__FUNCTION__, $message, $context, $channel);
-    }
-
-    /**
-     * 记录紧急情况
-     * @access public
-     * @param mixed $message 日志信息
-     * @param array $context 替换内容
-     * @return void
-     */
-    public static function critical($message, array $context = [], $channel = '')
-    {
-        self::log(__FUNCTION__, $message, $context, $channel);
-    }
 
     /**
      * 记录错误信息
@@ -300,7 +274,7 @@ class MLog
     }
 
     /**
-     * 记录sql信息
+     * 记录sql信息(最终是记录为debug级别)
      * @access public
      * @param mixed $message 日志信息
      * @param array $context 替换内容
