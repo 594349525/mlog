@@ -117,34 +117,32 @@ class LogFormat
      * 第三个字段表示传入callback的参数
      */
     public static $_basic_fields = array(
-        self::BF_APP_ID => array(array('Xiangxin\Logger\MLog', 'get_app_id'), false, array()),
-        self::BF_BACK_TRACE => array(array('Xiangxin\Logger\MLog', '_bf_back_trace'), false, array()),
-        self::BF_CODE_BLOCK => array(array('Xiangxin\Logger\MLog', '_bf_code_block'), false, array()),
-        self::BF_CODE_LINE => array(array('Xiangxin\Logger\MLog', '_bf_code_line'), false, array()),
-        self::BF_METHOD => array(array('Xiangxin\Logger\MLog', '_bf_method'), true, array()),
-        self::BF_PROCESS_ID => array(array('Xiangxin\Logger\MLog', '_bf_pid'), true, array()),
-        self::BF_REQ_IP => array(array('Xiangxin\Logger\MLog', '_bf_req_ip'), true, array()),
-        self::BF_REQ_VARS => array(array('Xiangxin\Logger\MLog', '_bf_req_vars'), true, array()),
-        self::BF_SERVER_HOST => array(array('Xiangxin\Logger\MLog', '_bf_server_host'), true, array()),
-        self::BF_SERVER_IP => array(array('Xiangxin\Logger\MLog', '_bf_server_ip'), true, array()),
-        self::BF_SESSION => array(array('Xiangxin\Logger\MLog', '_bf_sessions'), true, array()),
-        self::BF_STEP_TIME => array(array('Xiangxin\Logger\MLog', '_bf_step_time'), false, array()),
-        self::BF_TIMESTAMP => array(array('Xiangxin\Logger\MLog', '_bf_timestamp'), false, array()),
-        self::BF_URI => array(array('Xiangxin\Logger\MLog', '_bf_uri'), true, array()),
+        self::BF_APP_ID => array(array('Xiangxin\Logger\LogFormat', 'get_app_id'), false, array()),
+        self::BF_BACK_TRACE => array(array('Xiangxin\Logger\LogFormat', '_bf_back_trace'), false, array()),
+        self::BF_CODE_BLOCK => array(array('Xiangxin\Logger\LogFormat', '_bf_code_block'), false, array()),
+        self::BF_CODE_LINE => array(array('Xiangxin\Logger\LogFormat', '_bf_code_line'), false, array()),
+        self::BF_METHOD => array(array('Xiangxin\Logger\LogFormat', '_bf_method'), true, array()),
+        self::BF_PROCESS_ID => array(array('Xiangxin\Logger\LogFormat', '_bf_pid'), true, array()),
+        self::BF_REQ_IP => array(array('Xiangxin\Logger\LogFormat', '_bf_req_ip'), true, array()),
+        self::BF_REQ_VARS => array(array('Xiangxin\Logger\LogFormat', '_bf_req_vars'), true, array()),
+        self::BF_SERVER_HOST => array(array('Xiangxin\Logger\LogFormat', '_bf_server_host'), true, array()),
+        self::BF_SERVER_IP => array(array('Xiangxin\Logger\LogFormat', '_bf_server_ip'), true, array()),
+        self::BF_SESSION => array(array('Xiangxin\Logger\LogFormat', '_bf_sessions'), true, array()),
+        self::BF_STEP_TIME => array(array('Xiangxin\Logger\LogFormat', '_bf_step_time'), false, array()),
+        self::BF_TIMESTAMP => array(array('Xiangxin\Logger\LogFormat', '_bf_timestamp'), false, array()),
+        self::BF_URI => array(array('Xiangxin\Logger\LogFormat', '_bf_uri'), true, array()),
     );
 
     /**
      * 当前记录日志的时间点，带微秒的float
      */
-    private
-    static $_timestamp_last = 0;
+    private static $_timestamp_last = 0;
 
 
     /**
      * 上一次记录日志的时间点，带微秒的float
      */
-    private
-    static $_timestamp_now = 0;
+    private static $_timestamp_now = 0;
 
 
     /**
@@ -386,7 +384,7 @@ class LogFormat
      */
     public static function get_app_id()
     {
-        return self::$userId;
+        return MLog::$userId;
     }
 
     /**

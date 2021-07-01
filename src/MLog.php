@@ -37,7 +37,7 @@ class MLog
     private static $maxDefaultSize = 1024 * 512 * 10; //5M
 
     //登录用户id
-    private static $userId;
+    public static $userId;
 
 
     /*
