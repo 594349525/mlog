@@ -39,6 +39,9 @@ class MLog
     //登录用户id
     public static $userId;
 
+    //钉钉机器人token
+    public static $dingToken;
+
 
     /*
      * 初始化具体的日志类
@@ -64,6 +67,10 @@ class MLog
         if (!empty($argv[3])) {
             self::$userId = $argv[3];
         }
+        //设置钉钉机器人token
+        if (!empty($argv[4])) {
+            self::$dingToken = $argv[4];
+        }
         LogFormat::_init_basic_fields();
     }
 
@@ -74,7 +81,7 @@ class MLog
      * @param $arguments
      * @return mixed
      */
-    public static function record($level, $message, $context, $channel = '')
+    public static function record($level, $message, $context, $channel = '', $dingTalk = false)
     {
         $real_level = $level;
         if ($level == 'sql') {
@@ -106,6 +113,13 @@ class MLog
         }
 
         $mes = rtrim($mes, '###');
+
+        //钉钉通知
+        if ($dingTalk) {
+            $d_con = '日志: ' . $mes . "；调试内容：" . json_encode($context, JSON_UNESCAPED_UNICODE);
+            DingLog::sendTxt(self::$dingToken, $d_con);
+        }
+
 
         return $logger->addRecord($level, $mes, $context);
     }
@@ -207,9 +221,9 @@ class MLog
      * @param array $context 替换内容
      * @return void
      */
-    public static function log($level, $message, array $context = [], $channel = '')
+    public static function log($level, $message, array $context = [], $channel = '', $dingTalk = false)
     {
-        self::record($level, $message, $context, $channel);
+        self::record($level, $message, $context, $channel, $dingTalk);
     }
 
 
@@ -220,9 +234,9 @@ class MLog
      * @param array $context 替换内容
      * @return void
      */
-    public static function error($message, array $context = [], $channel = '')
+    public static function error($message, array $context = [], $channel = '', $dingTalk = false)
     {
-        self::log(__FUNCTION__, $message, $context, $channel);
+        self::log(__FUNCTION__, $message, $context, $channel, $dingTalk);
     }
 
     /**
@@ -232,9 +246,9 @@ class MLog
      * @param array $context 替换内容
      * @return void
      */
-    public static function warning($message, array $context = [], $channel = '')
+    public static function warning($message, array $context = [], $channel = '', $dingTalk = false)
     {
-        self::log(__FUNCTION__, $message, $context, $channel);
+        self::log(__FUNCTION__, $message, $context, $channel, $dingTalk);
     }
 
     /**
@@ -244,9 +258,9 @@ class MLog
      * @param array $context 替换内容
      * @return void
      */
-    public static function notice($message, array $context = [], $channel = '')
+    public static function notice($message, array $context = [], $channel = '', $dingTalk = false)
     {
-        self::log(__FUNCTION__, $message, $context, $channel);
+        self::log(__FUNCTION__, $message, $context, $channel, $dingTalk);
     }
 
     /**
@@ -256,9 +270,9 @@ class MLog
      * @param array $context 替换内容
      * @return void
      */
-    public static function info($message, array $context = [], $channel = '')
+    public static function info($message, array $context = [], $channel = '', $dingTalk = false)
     {
-        self::log(__FUNCTION__, $message, $context, $channel);
+        self::log(__FUNCTION__, $message, $context, $channel, $dingTalk);
     }
 
     /**
@@ -268,9 +282,9 @@ class MLog
      * @param array $context 替换内容
      * @return void
      */
-    public static function debug($message, array $context = [], $channel = '')
+    public static function debug($message, array $context = [], $channel = '', $dingTalk = false)
     {
-        self::log(__FUNCTION__, $message, $context, $channel);
+        self::log(__FUNCTION__, $message, $context, $channel, $dingTalk);
     }
 
     /**
@@ -280,8 +294,8 @@ class MLog
      * @param array $context 替换内容
      * @return void
      */
-    public static function sql($message, array $context = [], $channel = '')
+    public static function sql($message, array $context = [], $channel = '', $dingTalk = false)
     {
-        self::log(__FUNCTION__, $message, $context, $channel);
+        self::log(__FUNCTION__, $message, $context, $channel, $dingTalk);
     }
 }
